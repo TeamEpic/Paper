@@ -1,0 +1,46 @@
+From 36f35b18f9fbb3030b32c422077e322255d813df Mon Sep 17 00:00:00 2001
+From: Hazerdous <dransom96@gmail.com>
+Date: Wed, 12 Jun 2019 01:24:34 -0400
+Subject: [PATCH] Monumenta - Clear crafting slots when clearing player
+ inventory
+
+
+diff --git a/src/main/java/net/minecraft/server/PlayerInventory.java b/src/main/java/net/minecraft/server/PlayerInventory.java
+index 988a3611..4981be6c 100644
+--- a/src/main/java/net/minecraft/server/PlayerInventory.java
++++ b/src/main/java/net/minecraft/server/PlayerInventory.java
+@@ -205,6 +205,31 @@ public class PlayerInventory implements IInventory {
+             }
+         }
+ 
++        InventoryCrafting craftInventory =
++            this.player.activeContainer instanceof ContainerPlayer ? ((ContainerPlayer) this.player.activeContainer).craftInventory :
++            this.player.activeContainer instanceof ContainerWorkbench ? ((ContainerWorkbench) this.player.activeContainer).craftInventory : null;
++        if (craftInventory != null) {
++            for (k = 0; k < craftInventory.getSize(); ++k) {
++                ItemStack itemstack = craftInventory.getItem(k);
++
++                if (!itemstack.isEmpty() && predicate.test(itemstack)) {
++                    int l = i <= 0 ? itemstack.getCount() : Math.min(i - j, itemstack.getCount());
++
++                    j += l;
++                    if (i != 0) {
++                        itemstack.subtract(l);
++                        if (itemstack.isEmpty()) {
++                            craftInventory.setItem(k, ItemStack.a);
++                        }
++
++                        if (i > 0 && j >= i) {
++                            return j;
++                        }
++                    }
++                }
++            }
++        }
++
+         return j;
+     }
+ 
+-- 
+2.17.1
+

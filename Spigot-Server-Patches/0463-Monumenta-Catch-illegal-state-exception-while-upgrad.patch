@@ -1,0 +1,24 @@
+From 65e90b2f7253e67572bbeace65aeb4c23ef45ea3 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Sun, 11 Aug 2019 22:59:45 -0400
+Subject: [PATCH] Monumenta - Catch illegal state exception while upgrading
+ advancements
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/com/mojang/datafixers/DataFixerUpper.java b/src/main/java/com/mojang/datafixers/DataFixerUpper.java
+index 8ce8cb921..8aea2fdee 100644
+--- a/src/main/java/com/mojang/datafixers/DataFixerUpper.java
++++ b/src/main/java/com/mojang/datafixers/DataFixerUpper.java
+@@ -87,6 +87,8 @@ public class DataFixerUpper implements DataFixer {
+ 
+                 return new Dynamic<>(input.getOps(), read.get());
+             }
++		} catch (java.lang.IllegalStateException ignored) {
++			// Monumenta ignored warning
+         } catch (final Throwable t) {
+             LOGGER.error("Something went wrong upgrading!", t);
+         }
+-- 
+2.17.1
+

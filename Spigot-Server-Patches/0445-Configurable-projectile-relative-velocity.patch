@@ -1,4 +1,4 @@
-From 811b4e42f5a03c6fa2e4c1865d91946775cf6118 Mon Sep 17 00:00:00 2001
+From 3b7fe87bf940a3cfe08d8cce2927cadf1cef4ee1 Mon Sep 17 00:00:00 2001
 From: Lucavon <lucavonlp@gmail.com>
 Date: Sun, 26 May 2019 15:36:04 +0200
 Subject: [PATCH] Configurable projectile relative velocity
@@ -25,7 +25,7 @@ P3) Solutions for 1) and especially 2) might not be future-proof, while this
 server-internal fix makes this change future-proof.
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-index bfd690ecc..b8131abae 100644
+index bfd690ec..b8131aba 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
 @@ -474,6 +474,11 @@ public class PaperWorldConfig {
@@ -41,7 +41,7 @@ index bfd690ecc..b8131abae 100644
      private void villagesLoadChunks() {
          villagesLoadChunks = getBoolean("game-mechanics.villages-load-chunks", false);
 diff --git a/src/main/java/net/minecraft/server/EntityArrow.java b/src/main/java/net/minecraft/server/EntityArrow.java
-index 6aa518f17..736537b45 100644
+index 6aa518f1..736537b4 100644
 --- a/src/main/java/net/minecraft/server/EntityArrow.java
 +++ b/src/main/java/net/minecraft/server/EntityArrow.java
 @@ -80,12 +80,13 @@ public abstract class EntityArrow extends Entity implements IProjectile {
@@ -60,7 +60,7 @@ index 6aa518f17..736537b45 100644
  
      public void shoot(double d0, double d1, double d2, float f, float f1) {
 diff --git a/src/main/java/net/minecraft/server/EntityProjectile.java b/src/main/java/net/minecraft/server/EntityProjectile.java
-index 60ab1c751..5dae5d604 100644
+index 60ab1c75..5dae5d60 100644
 --- a/src/main/java/net/minecraft/server/EntityProjectile.java
 +++ b/src/main/java/net/minecraft/server/EntityProjectile.java
 @@ -44,12 +44,13 @@ public abstract class EntityProjectile extends Entity implements IProjectile {
@@ -79,5 +79,5 @@ index 60ab1c751..5dae5d604 100644
  
      public void shoot(double d0, double d1, double d2, float f, float f1) {
 -- 
-2.22.0
+2.17.1
 
