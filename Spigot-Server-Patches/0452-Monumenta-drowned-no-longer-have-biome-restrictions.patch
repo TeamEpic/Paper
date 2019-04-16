@@ -1,0 +1,23 @@
+From ef9b2d2687a6aa7a8be4e0f090c78f422f5e5ef3 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Sat, 23 Mar 2019 01:51:24 -0400
+Subject: [PATCH] Monumenta - drowned no longer have biome restrictions
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityDrowned.java b/src/main/java/net/minecraft/server/EntityDrowned.java
+index bd902d44..9f98f1dc 100644
+--- a/src/main/java/net/minecraft/server/EntityDrowned.java
++++ b/src/main/java/net/minecraft/server/EntityDrowned.java
+@@ -49,7 +49,7 @@ public class EntityDrowned extends EntityZombie implements IRangedEntity {
+     public boolean a(GeneratorAccess generatoraccess, boolean flag) {
+         BiomeBase biomebase = generatoraccess.getBiome(new BlockPosition(this.locX, this.locY, this.locZ));
+ 
+-        return biomebase != Biomes.RIVER && biomebase != Biomes.FROZEN_RIVER ? this.random.nextInt(40) == 0 && this.dF() && super.a(generatoraccess, flag) : this.random.nextInt(15) == 0 && super.a(generatoraccess, flag);
++        return this.random.nextInt(15) == 0 && super.a(generatoraccess, flag);
+     }
+ 
+     private boolean dF() {
+-- 
+2.17.1
+
