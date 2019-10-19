@@ -1,0 +1,30 @@
+From 4948dab542dcb49cabdf37fd7913a04053fb5f2d Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Thu, 30 Jan 2020 02:15:29 -0500
+Subject: [PATCH] Monumenta - Move cooldown reset after EntityDamage events
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityHuman.java b/src/main/java/net/minecraft/server/EntityHuman.java
+index 81747883a..7b1dbfc78 100644
+--- a/src/main/java/net/minecraft/server/EntityHuman.java
++++ b/src/main/java/net/minecraft/server/EntityHuman.java
+@@ -1024,7 +1024,6 @@ public abstract class EntityHuman extends EntityLiving {
+ 
+                 f *= 0.2F + f2 * f2 * 0.8F;
+                 f1 *= f2;
+-                this.dH();
+                 if (f > 0.0F || f1 > 0.0F) {
+                     boolean flag = f2 > 0.9F;
+                     boolean flag1 = false;
+@@ -1220,6 +1219,7 @@ public abstract class EntityHuman extends EntityLiving {
+                         // CraftBukkit end
+                     }
+                 }
++                this.dH();
+ 
+             }
+         }
+-- 
+2.17.1
+
