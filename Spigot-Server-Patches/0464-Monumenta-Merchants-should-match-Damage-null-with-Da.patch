@@ -1,0 +1,30 @@
+From e6704c641653495a551cd3b6bb5b1287181647ac Mon Sep 17 00:00:00 2001
+From: Hazerdous <dransom96@gmail.com>
+Date: Wed, 22 May 2019 21:51:29 -0400
+Subject: [PATCH] Monumenta - Merchants should match Damage:null with Damage:0
+
+
+diff --git a/src/main/java/net/minecraft/server/MerchantRecipeList.java b/src/main/java/net/minecraft/server/MerchantRecipeList.java
+index 2eb7e6dc5..82c5d15f7 100644
+--- a/src/main/java/net/minecraft/server/MerchantRecipeList.java
++++ b/src/main/java/net/minecraft/server/MerchantRecipeList.java
+@@ -32,12 +32,14 @@ public class MerchantRecipeList extends ArrayList<MerchantRecipe> {
+ 
+     private boolean a(ItemStack itemstack, ItemStack itemstack1) {
+         ItemStack itemstack2 = itemstack.cloneItemStack();
++        ItemStack itemstack3 = itemstack1.cloneItemStack();
+ 
+-        if (itemstack2.getItem().usesDurability()) {
++        if (itemstack2.getItem().usesDurability() && itemstack3.getItem().usesDurability()) {
+             itemstack2.setDamage(itemstack2.getDamage());
++            itemstack3.setDamage(itemstack3.getDamage());
+         }
+ 
+-        return ItemStack.c(itemstack2, itemstack1) && (!itemstack1.hasTag() || itemstack2.hasTag() && GameProfileSerializer.a(itemstack1.getTag(), itemstack2.getTag(), false));
++        return ItemStack.c(itemstack2, itemstack3) && (!itemstack3.hasTag() || itemstack2.hasTag() && GameProfileSerializer.a(itemstack3.getTag(), itemstack2.getTag(), false));
+     }
+ 
+     public void a(PacketDataSerializer packetdataserializer) {
+-- 
+2.17.1
+

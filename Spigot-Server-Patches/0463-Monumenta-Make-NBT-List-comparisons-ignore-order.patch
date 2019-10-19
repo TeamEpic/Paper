@@ -1,0 +1,22 @@
+From 0bbf3a16f623952a6a5251d4a56682d361503101 Mon Sep 17 00:00:00 2001
+From: Hazerdous <dransom96@gmail.com>
+Date: Wed, 22 May 2019 12:07:20 -0400
+Subject: [PATCH] Monumenta - Make NBT List comparisons ignore order
+
+
+diff --git a/src/main/java/net/minecraft/server/NBTTagList.java b/src/main/java/net/minecraft/server/NBTTagList.java
+index 22027321b..f63c56acb 100644
+--- a/src/main/java/net/minecraft/server/NBTTagList.java
++++ b/src/main/java/net/minecraft/server/NBTTagList.java
+@@ -254,7 +254,7 @@ public class NBTTagList extends NBTList<NBTBase> {
+     }
+ 
+     public boolean equals(Object object) {
+-        return this == object ? true : object instanceof NBTTagList && Objects.equals(this.list, ((NBTTagList) object).list);
++        return this == object ? true : object instanceof NBTTagList && this.list.size() == ((NBTTagList) object).list.size() && this.list.containsAll(((NBTTagList) object).list);
+     }
+ 
+     public int hashCode() {
+-- 
+2.17.1
+

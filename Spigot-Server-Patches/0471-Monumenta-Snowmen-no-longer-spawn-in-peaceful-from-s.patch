@@ -1,0 +1,25 @@
+From dc4817b56253103da170252cace08b028dcd2536 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Wed, 4 Dec 2019 22:29:45 -0500
+Subject: [PATCH] Monumenta - Snowmen no longer spawn in peaceful from spawners
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntitySnowman.java b/src/main/java/net/minecraft/server/EntitySnowman.java
+index 6fdd8cc3a..3d742457f 100644
+--- a/src/main/java/net/minecraft/server/EntitySnowman.java
++++ b/src/main/java/net/minecraft/server/EntitySnowman.java
+@@ -39,6 +39,10 @@ public class EntitySnowman extends EntityGolem implements IRangedEntity {
+         nbttagcompound.setBoolean("Pumpkin", this.hasPumpkin());
+     }
+ 
++    public boolean a(GeneratorAccess generatoraccess, boolean flag) {
++        return generatoraccess.getDifficulty() != EnumDifficulty.PEACEFUL;
++    }
++
+     public void a(NBTTagCompound nbttagcompound) {
+         super.a(nbttagcompound);
+         if (nbttagcompound.hasKey("Pumpkin")) {
+-- 
+2.17.1
+
