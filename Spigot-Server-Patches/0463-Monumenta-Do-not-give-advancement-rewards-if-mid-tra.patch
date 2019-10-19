@@ -1,0 +1,22 @@
+From ed0345ddb6ee9a34ce21665ca2b5ed4916b8abec Mon Sep 17 00:00:00 2001
+From: Hazerdous <dransom96@gmail.com>
+Date: Mon, 3 Jun 2019 01:09:30 -0400
+Subject: [PATCH] Monumenta - Do not give advancement rewards if mid-transfer
+
+
+diff --git a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
+index c7ad71c5f..5b9b5e925 100644
+--- a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
++++ b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
+@@ -237,7 +237,7 @@ public class AdvancementDataPlayer {
+             this.d(advancement);
+             this.i.add(advancement);
+             flag = true;
+-            if (!flag1 && advancementprogress.isDone()) {
++            if (!flag1 && advancementprogress.isDone() && !this.player.getScoreboardTags().contains("MidTransfer")) {
+                 this.player.world.getServer().getPluginManager().callEvent(new org.bukkit.event.player.PlayerAdvancementDoneEvent(this.player.getBukkitEntity(), advancement.bukkit)); // CraftBukkit
+                 advancement.d().a(this.player);
+                 if (advancement.c() != null && advancement.c().i() && this.player.world.getGameRules().getBoolean("announceAdvancements")) {
+-- 
+2.17.1
+
