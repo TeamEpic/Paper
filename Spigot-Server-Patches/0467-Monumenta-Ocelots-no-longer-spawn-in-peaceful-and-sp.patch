@@ -1,0 +1,39 @@
+From d587a3683cd6434c8f83017b87143e70f5f95b1f Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Wed, 20 Nov 2019 01:20:13 -0500
+Subject: [PATCH] Monumenta - Ocelots no longer spawn in peaceful and spawn on
+ any block
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityOcelot.java b/src/main/java/net/minecraft/server/EntityOcelot.java
+index 13c84bda8..ccc6930bc 100644
+--- a/src/main/java/net/minecraft/server/EntityOcelot.java
++++ b/src/main/java/net/minecraft/server/EntityOcelot.java
+@@ -192,21 +192,18 @@ public class EntityOcelot extends EntityTameableAnimal {
+     }
+ 
+     public boolean a(GeneratorAccess generatoraccess, boolean flag) {
+-        return this.random.nextInt(3) != 0;
++        return generatoraccess.getDifficulty() != EnumDifficulty.PEACEFUL;
+     }
+ 
+     public boolean a(IWorldReader iworldreader) {
+         if (iworldreader.a_(this, this.getBoundingBox()) && iworldreader.getCubes(this, this.getBoundingBox()) && !iworldreader.containsLiquid(this.getBoundingBox())) {
+             BlockPosition blockposition = new BlockPosition(this.locX, this.getBoundingBox().minY, this.locZ);
+ 
+-            if (blockposition.getY() < iworldreader.getSeaLevel()) {
+-                return false;
+-            }
+ 
+             IBlockData iblockdata = iworldreader.getType(blockposition.down());
+             Block block = iblockdata.getBlock();
+ 
+-            if (block == Blocks.GRASS_BLOCK || iblockdata.a(TagsBlock.LEAVES)) {
++            if (block != Blocks.AIR) {
+                 return true;
+             }
+         }
+-- 
+2.17.1
+
