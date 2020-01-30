@@ -1,0 +1,133 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Wed, 6 Mar 2019 16:35:05 -0500
+Subject: [PATCH] Monumenta - Iron golems no longer automatically attack
+ monsters
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityDrowned.java b/src/main/java/net/minecraft/server/EntityDrowned.java
+index ea7934060d7b7c3ca1c7fdc303168377a59c21a3..144e262b9e262a9fc2c7481fe806a10f052314a1 100644
+--- a/src/main/java/net/minecraft/server/EntityDrowned.java
++++ b/src/main/java/net/minecraft/server/EntityDrowned.java
+@@ -32,7 +32,6 @@ public class EntityDrowned extends EntityZombie implements IRangedEntity {
+         this.targetSelector.a(1, (new PathfinderGoalHurtByTarget(this, new Class[]{EntityDrowned.class})).a(EntityPigZombie.class));
+         this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, 10, true, false, this::i));
+         if ( world.spigotConfig.zombieAggressiveTowardsVillager ) this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, false)); // Paper
+-        this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, true));
+         this.targetSelector.a(5, new PathfinderGoalNearestAttackableTarget<>(this, EntityTurtle.class, 10, true, false, EntityTurtle.bo));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityEvoker.java b/src/main/java/net/minecraft/server/EntityEvoker.java
+index ae7b269def9eda9f963f2f632e131aad244b9ef3..01ff753e030555dbc2587171c1461c6a64ef0e7f 100644
+--- a/src/main/java/net/minecraft/server/EntityEvoker.java
++++ b/src/main/java/net/minecraft/server/EntityEvoker.java
+@@ -27,7 +27,6 @@ public class EntityEvoker extends EntityIllagerWizard {
+         this.targetSelector.a(1, (new PathfinderGoalHurtByTarget(this, new Class[]{EntityRaider.class})).a(new Class[0])); // Paper - decompile fix
+         this.targetSelector.a(2, (new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true)).a(300));
+         this.targetSelector.a(3, (new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, false)).a(300));
+-        this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, false));
+     }
+ 
+     public static AttributeProvider.Builder eK() {
+diff --git a/src/main/java/net/minecraft/server/EntityIllagerIllusioner.java b/src/main/java/net/minecraft/server/EntityIllagerIllusioner.java
+index ff8efca2616cb14d9e79e03e3d08781d2547b8eb..cdf1aa5ce52b690b82c7081f3f7241104a86d25a 100644
+--- a/src/main/java/net/minecraft/server/EntityIllagerIllusioner.java
++++ b/src/main/java/net/minecraft/server/EntityIllagerIllusioner.java
+@@ -33,7 +33,6 @@ public class EntityIllagerIllusioner extends EntityIllagerWizard implements IRan
+         this.targetSelector.a(1, (new PathfinderGoalHurtByTarget(this, new Class[]{EntityRaider.class})).a(new Class[0])); // CraftBukkit - decompile error
+         this.targetSelector.a(2, (new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true)).a(300));
+         this.targetSelector.a(3, (new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, false)).a(300));
+-        this.targetSelector.a(3, (new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, false)).a(300));
+     }
+ 
+     public static AttributeProvider.Builder eK() {
+diff --git a/src/main/java/net/minecraft/server/EntityIronGolem.java b/src/main/java/net/minecraft/server/EntityIronGolem.java
+index 0a5c27e732540e03c87e6da0fbdc6e3c2e382810..a92b30bf3d2db27b7694399d6696fbc004b34aa8 100644
+--- a/src/main/java/net/minecraft/server/EntityIronGolem.java
++++ b/src/main/java/net/minecraft/server/EntityIronGolem.java
+@@ -31,12 +31,8 @@ public class EntityIronGolem extends EntityGolem implements IEntityAngerable {
+         this.goalSelector.a(5, new PathfinderGoalOfferFlower(this));
+         this.goalSelector.a(7, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 6.0F));
+         this.goalSelector.a(8, new PathfinderGoalRandomLookaround(this));
+-        this.targetSelector.a(1, new PathfinderGoalDefendVillage(this));
+         this.targetSelector.a(2, new PathfinderGoalHurtByTarget(this, new Class[0]));
+         this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, 10, true, false, this::a_));
+-        this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityInsentient.class, 5, false, false, (entityliving) -> {
+-            return entityliving instanceof IMonster && !(entityliving instanceof EntityCreeper);
+-        }));
+         this.targetSelector.a(4, new PathfinderGoalUniversalAngerReset<>(this, false));
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityPillager.java b/src/main/java/net/minecraft/server/EntityPillager.java
+index a3a428da99574c485fcf2b8c7944e0d8354146ee..619cb80540a3c3152368882a7a5ccd41bef01f45 100644
+--- a/src/main/java/net/minecraft/server/EntityPillager.java
++++ b/src/main/java/net/minecraft/server/EntityPillager.java
+@@ -25,7 +25,6 @@ public class EntityPillager extends EntityIllagerAbstract implements ICrossbow {
+         this.targetSelector.a(1, (new PathfinderGoalHurtByTarget(this, new Class[]{EntityRaider.class})).a(new Class[0])); // CraftBukkit - decompile error
+         this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true));
+         this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, false));
+-        this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, true));
+     }
+ 
+     public static AttributeProvider.Builder eK() {
+diff --git a/src/main/java/net/minecraft/server/EntityRavager.java b/src/main/java/net/minecraft/server/EntityRavager.java
+index 7064a12c898740b50b60c2b1ea08c1c01e5b67d7..b915eda139bf19b6221f26489eda7dd653ae4011 100644
+--- a/src/main/java/net/minecraft/server/EntityRavager.java
++++ b/src/main/java/net/minecraft/server/EntityRavager.java
+@@ -31,7 +31,6 @@ public class EntityRavager extends EntityRaider {
+         this.targetSelector.a(2, (new PathfinderGoalHurtByTarget(this, new Class[]{EntityRaider.class})).a(new Class[0])); // CraftBukkit - decompile error
+         this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true));
+         this.targetSelector.a(4, new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, true));
+-        this.targetSelector.a(4, new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, true));
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java b/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java
+index cb97502e7c4f3aa9ddff231b367b48f5f09f319c..c994aa9ed3cc25b2812bd9dc543b341bea17df83 100644
+--- a/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java
++++ b/src/main/java/net/minecraft/server/EntitySkeletonAbstract.java
+@@ -35,7 +35,6 @@ public abstract class EntitySkeletonAbstract extends EntityMonster implements IR
+         this.goalSelector.a(6, new PathfinderGoalRandomLookaround(this));
+         this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, new Class[0]));
+         this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true));
+-        this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, true));
+         this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityWolf.class, true));
+         this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityTurtle.class, 10, true, false, EntityTurtle.bo));
+     }
+diff --git a/src/main/java/net/minecraft/server/EntitySlime.java b/src/main/java/net/minecraft/server/EntitySlime.java
+index f74c827850ebb894af94aecadcaa0e3ff8c6254c..b5370fda9c3710316763def01041ccbca9ea71c2 100644
+--- a/src/main/java/net/minecraft/server/EntitySlime.java
++++ b/src/main/java/net/minecraft/server/EntitySlime.java
+@@ -43,7 +43,6 @@ public class EntitySlime extends EntityInsentient implements IMonster {
+         this.targetSelector.a(1, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, 10, true, false, (entityliving) -> {
+             return Math.abs(entityliving.locY() - this.locY()) <= 4.0D;
+         }));
+-        this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, true));
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityVindicator.java b/src/main/java/net/minecraft/server/EntityVindicator.java
+index fd34d88c0b64dea75b82a5b23a79b119eca22a4a..bb03e1481a09629c0f91e3013c26d2fa4306e267 100644
+--- a/src/main/java/net/minecraft/server/EntityVindicator.java
++++ b/src/main/java/net/minecraft/server/EntityVindicator.java
+@@ -28,7 +28,6 @@ public class EntityVindicator extends EntityIllagerAbstract {
+         this.targetSelector.a(1, (new PathfinderGoalHurtByTarget(this, new Class[]{EntityRaider.class})).a(new Class[0])); // Paper - decompile fix
+         this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true));
+         this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, true));
+-        this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, true));
+         this.targetSelector.a(4, new EntityVindicator.b(this));
+         this.goalSelector.a(8, new PathfinderGoalRandomStroll(this, 0.6D));
+         this.goalSelector.a(9, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 3.0F, 1.0F));
+diff --git a/src/main/java/net/minecraft/server/EntityZombie.java b/src/main/java/net/minecraft/server/EntityZombie.java
+index f55376e19176e666bb895b3a76d43e8a9607cdd2..2ea432bce28b1cd066d301fe432a02c98b6f34f3 100644
+--- a/src/main/java/net/minecraft/server/EntityZombie.java
++++ b/src/main/java/net/minecraft/server/EntityZombie.java
+@@ -59,7 +59,6 @@ public class EntityZombie extends EntityMonster {
+         this.targetSelector.a(1, (new PathfinderGoalHurtByTarget(this, new Class[0])).a(EntityPigZombie.class));
+         this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true));
+         if ( world.spigotConfig.zombieAggressiveTowardsVillager ) this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, false)); // Spigot
+-        this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, true));
+         this.targetSelector.a(5, new PathfinderGoalNearestAttackableTarget<>(this, EntityTurtle.class, 10, true, false, EntityTurtle.bo));
+     }
+ 
