@@ -1,0 +1,33 @@
+From f08a4f4bb835444f3aef563925dbf2a1907894d5 Mon Sep 17 00:00:00 2001
+From: Monumenta <monumenta.mgmt@gmail.com>
+Date: Fri, 12 Jan 2018 19:54:34 -0500
+Subject: [PATCH] Monumenta - Spreadplayers now ignores the block at world
+ height
+
+Signed-off-by: Monumenta <monumenta.mgmt@gmail.com>
+
+diff --git a/src/main/java/net/minecraft/server/CommandSpreadPlayers.java b/src/main/java/net/minecraft/server/CommandSpreadPlayers.java
+index e7f230c7e..c16454050 100644
+--- a/src/main/java/net/minecraft/server/CommandSpreadPlayers.java
++++ b/src/main/java/net/minecraft/server/CommandSpreadPlayers.java
+@@ -258,7 +258,7 @@ public class CommandSpreadPlayers {
+         }
+ 
+         public int a(IBlockAccess iblockaccess) {
+-            BlockPosition blockposition = new BlockPosition(this.a, 256.0D, this.b);
++            BlockPosition blockposition = new BlockPosition(this.a, 255.0D, this.b);
+ 
+             do {
+                 if (blockposition.getY() <= 0) {
+@@ -272,7 +272,7 @@ public class CommandSpreadPlayers {
+         }
+ 
+         public boolean b(IBlockAccess iblockaccess) {
+-            BlockPosition blockposition = new BlockPosition(this.a, 256.0D, this.b);
++            BlockPosition blockposition = new BlockPosition(this.a, 255.0D, this.b);
+ 
+             IBlockData iblockdata;
+ 
+-- 
+2.17.1
+
