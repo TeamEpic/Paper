@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Hazerd <dransom96@gmail.com>
+Date: Sun, 10 May 2020 18:42:57 -0400
+Subject: [PATCH] Monumenta - Villager trades match durability=0 with
+ durability=null
+
+
+diff --git a/src/main/java/net/minecraft/server/MerchantRecipe.java b/src/main/java/net/minecraft/server/MerchantRecipe.java
+index e42382a5c385c27b6322b03e87870eb20b21cb22..b06dfe4107cfa8ba6aa0419a8cc989a2db908eac 100644
+--- a/src/main/java/net/minecraft/server/MerchantRecipe.java
++++ b/src/main/java/net/minecraft/server/MerchantRecipe.java
+@@ -196,12 +196,14 @@ public class MerchantRecipe {
+             return true;
+         } else {
+             ItemStack itemstack2 = itemstack.cloneItemStack();
++            ItemStack itemstack3 = itemstack1.cloneItemStack();
+ 
+-            if (itemstack2.getItem().usesDurability()) {
++            if (itemstack2.getItem().usesDurability() && itemstack3.getItem().usesDurability()) {
+                 itemstack2.setDamage(itemstack2.getDamage());
++				itemstack3.setDamage(itemstack3.getDamage());
+             }
+ 
+-            return ItemStack.c(itemstack2, itemstack1) && (!itemstack1.hasTag() || itemstack2.hasTag() && GameProfileSerializer.a(itemstack1.getTag(), itemstack2.getTag(), false));
++            return ItemStack.c(itemstack2, itemstack3) && (!itemstack3.hasTag() || itemstack2.hasTag() && GameProfileSerializer.a(itemstack3.getTag(), itemstack2.getTag(), false));
+         }
+     }
+ 

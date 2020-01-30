@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Sat, 23 Mar 2019 01:51:24 -0400
+Subject: [PATCH] Monumenta - drowned no longer have biome restrictions
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityDrowned.java b/src/main/java/net/minecraft/server/EntityDrowned.java
+index 144e262b9e262a9fc2c7481fe806a10f052314a1..5eaf26eb0772d47cbc2102cebc6e6c461b9d9a2f 100644
+--- a/src/main/java/net/minecraft/server/EntityDrowned.java
++++ b/src/main/java/net/minecraft/server/EntityDrowned.java
+@@ -50,7 +50,7 @@ public class EntityDrowned extends EntityZombie implements IRangedEntity {
+         Optional<ResourceKey<BiomeBase>> optional = worldaccess.i(blockposition);
+         boolean flag = worldaccess.getDifficulty() != EnumDifficulty.PEACEFUL && a(worldaccess, blockposition, random) && (enummobspawn == EnumMobSpawn.SPAWNER || worldaccess.getFluid(blockposition).a((Tag) TagsFluid.WATER));
+ 
+-        return !Objects.equals(optional, Optional.of(Biomes.RIVER)) && !Objects.equals(optional, Optional.of(Biomes.FROZEN_RIVER)) ? random.nextInt(40) == 0 && a((GeneratorAccess) worldaccess, blockposition) && flag : random.nextInt(15) == 0 && flag;
++        return (enummobspawn == EnumMobSpawn.SPAWNER || random.nextInt(15) == 0) && flag;
+     }
+ 
+     private static boolean a(GeneratorAccess generatoraccess, BlockPosition blockposition) {
