@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Wed, 29 Apr 2020 21:17:15 +0000
+Subject: [PATCH] Monumenta - Reset last player hurt time on taking any damage
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index ab6576f36e7682d5100f4e9358e76426e4a1c525..1d1db06137cd71c38bda881067c6f2573d6e1974 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -1069,6 +1069,10 @@ public abstract class EntityLiving extends Entity {
+             this.ax = 0.0F;
+             Entity entity1 = damagesource.getEntity();
+ 
++            if (this.killer != null) {
++                this.lastDamageByPlayerTime = 100;
++            }
++
+             if (entity1 != null) {
+                 if (entity1 instanceof EntityLiving) {
+                     this.setLastDamager((EntityLiving) entity1);
