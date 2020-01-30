@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Thu, 4 Mar 2021 16:02:56 -0500
+Subject: [PATCH] Monumenta - Decrease severity of tile entity fix to warning
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
+index 2b94c195db43d8e7fd58301a33377e87daa16e98..1989e46c768a141f1458a5887708a5e64d5760d3 100644
+--- a/src/main/java/net/minecraft/server/WorldServer.java
++++ b/src/main/java/net/minecraft/server/WorldServer.java
+@@ -286,7 +286,7 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+     }
+ 
+     private TileEntity fixTileEntity(BlockPosition pos, Block type, TileEntity found) {
+-        this.getServer().getLogger().log(Level.SEVERE, "Block at {0}, {1}, {2} is {3} but has {4}" + ". "
++        this.getServer().getLogger().log(Level.WARNING, "Block at {0}, {1}, {2} is {3} but has {4}" + ". "
+                 + "Bukkit will attempt to fix this, but there may be additional damage that we cannot recover.", new Object[]{pos.getX(), pos.getY(), pos.getZ(), type, found});
+ 
+         if (type instanceof ITileEntity) {
