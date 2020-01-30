@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Thu, 15 Apr 2021 20:58:30 -0400
+Subject: [PATCH] Monumenta - Skeletons can only shoot bows from main hand
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/ProjectileHelper.java b/src/main/java/net/minecraft/server/ProjectileHelper.java
+index b2c64b31440389db5abe2322f7e31b328f590f6c..7095b83552960738fa8ba6e496a21f6acfa14a87 100644
+--- a/src/main/java/net/minecraft/server/ProjectileHelper.java
++++ b/src/main/java/net/minecraft/server/ProjectileHelper.java
+@@ -85,6 +85,7 @@ public final class ProjectileHelper {
+     }
+ 
+     public static EnumHand a(EntityLiving entityliving, Item item) {
++        if (Items.BOW == item) return EnumHand.MAIN_HAND; /* MONUMENTA - Only allow mobs to use bows from mainhand */
+         return entityliving.getItemInMainHand().getItem() == item ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+     }
+ 

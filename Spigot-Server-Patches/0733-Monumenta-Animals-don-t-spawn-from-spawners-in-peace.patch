@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Sun, 28 Feb 2021 00:05:15 -0500
+Subject: [PATCH] Monumenta - Animals don't spawn from spawners in peaceful
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityAnimal.java b/src/main/java/net/minecraft/server/EntityAnimal.java
+index b290218e506d5e4ddd1af17f91de19a588bbcfbd..04b66efd9cc4e7d086689cb970b36d0eb1d590d0 100644
+--- a/src/main/java/net/minecraft/server/EntityAnimal.java
++++ b/src/main/java/net/minecraft/server/EntityAnimal.java
+@@ -92,6 +92,11 @@ public abstract class EntityAnimal extends EntityAgeable {
+     }
+ 
+     public static boolean b(EntityTypes<? extends EntityAnimal> entitytypes, GeneratorAccess generatoraccess, EnumMobSpawn enummobspawn, BlockPosition blockposition, Random random) {
++        // MONUMENTA START
++        if (enummobspawn == EnumMobSpawn.SPAWNER && generatoraccess.getDifficulty() == EnumDifficulty.PEACEFUL) {
++            return false;
++        }
++        // MONUMENTA END
+         return generatoraccess.getType(blockposition.down()).a(Blocks.GRASS_BLOCK) && generatoraccess.getLightLevel(blockposition, 0) > 8;
+     }
+ 

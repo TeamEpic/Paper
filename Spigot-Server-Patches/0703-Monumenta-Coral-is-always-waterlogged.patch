@@ -1,0 +1,61 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Mon, 17 Sep 2018 22:03:48 -0400
+Subject: [PATCH] Monumenta - Coral is always waterlogged
+
+NOTE:
+This patch is annoying because Spigot hasn't made any modifications to
+BlockCoralBase. So if this patch breaks, the change to that file is the
+same as the change to BlockCoral.
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/BlockCoral.java b/src/main/java/net/minecraft/server/BlockCoral.java
+index 4611577966e19836311098d5b1a2d1e596327466..7e9247535422859751f7b0f46f1d19991607efda 100644
+--- a/src/main/java/net/minecraft/server/BlockCoral.java
++++ b/src/main/java/net/minecraft/server/BlockCoral.java
+@@ -35,19 +35,7 @@ public class BlockCoral extends Block {
+     }
+ 
+     protected boolean a(IBlockAccess iblockaccess, BlockPosition blockposition) {
+-        EnumDirection[] aenumdirection = EnumDirection.values();
+-        int i = aenumdirection.length;
+-
+-        for (int j = 0; j < i; ++j) {
+-            EnumDirection enumdirection = aenumdirection[j];
+-            Fluid fluid = iblockaccess.getFluid(blockposition.shift(enumdirection));
+-
+-            if (fluid.a((Tag) TagsFluid.WATER)) {
+-                return true;
+-            }
+-        }
+-
+-        return false;
++        return true;
+     }
+ 
+     @Nullable
+diff --git a/src/main/java/net/minecraft/server/BlockCoralBase.java b/src/main/java/net/minecraft/server/BlockCoralBase.java
+index 2457227cd489838278e439c4f2d68638d9962293..df1ad99768784ebc370bae7b84b4d8d5e470b81d 100644
+--- a/src/main/java/net/minecraft/server/BlockCoralBase.java
++++ b/src/main/java/net/minecraft/server/BlockCoralBase.java
+@@ -23,18 +23,7 @@ public class BlockCoralBase extends Block implements IBlockWaterlogged {
+         if ((Boolean) iblockdata.get(BlockCoralBase.b)) {
+             return true;
+         } else {
+-            EnumDirection[] aenumdirection = EnumDirection.values();
+-            int i = aenumdirection.length;
+-
+-            for (int j = 0; j < i; ++j) {
+-                EnumDirection enumdirection = aenumdirection[j];
+-
+-                if (iblockaccess.getFluid(blockposition.shift(enumdirection)).a((Tag) TagsFluid.WATER)) {
+-                    return true;
+-                }
+-            }
+-
+-            return false;
++            return true;
+         }
+     }
+ 

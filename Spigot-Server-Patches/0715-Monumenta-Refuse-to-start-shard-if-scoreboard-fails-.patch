@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Thu, 6 Feb 2020 01:34:38 -0500
+Subject: [PATCH] Monumenta - Refuse to start shard if scoreboard fails to load
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/WorldPersistentData.java b/src/main/java/net/minecraft/server/WorldPersistentData.java
+index 138c6d707e33cd352aa4b26dfb279c5b77448de0..d0597610da7ce164eac10959e3774b151c7137ca 100644
+--- a/src/main/java/net/minecraft/server/WorldPersistentData.java
++++ b/src/main/java/net/minecraft/server/WorldPersistentData.java
+@@ -71,6 +71,7 @@ public class WorldPersistentData {
+             }
+         } catch (Exception exception) {
+             WorldPersistentData.LOGGER.error("Error loading saved data: {}", s, exception);
++            System.exit(-9001);
+         }
+ 
+         return null;

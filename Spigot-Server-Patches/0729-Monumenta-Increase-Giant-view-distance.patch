@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Thu, 10 Dec 2020 22:25:21 -0500
+Subject: [PATCH] Monumenta - Increase Giant view distance
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/org/spigotmc/TrackingRange.java b/src/main/java/org/spigotmc/TrackingRange.java
+index 5cfe16ef8c5a7b4405efa58b8fc532e14353f88d..653599c16e83198866a63e5f00efdca98a97fe5c 100644
+--- a/src/main/java/org/spigotmc/TrackingRange.java
++++ b/src/main/java/org/spigotmc/TrackingRange.java
+@@ -5,6 +5,7 @@ import net.minecraft.server.EntityEnderDragon; // Paper
+ import net.minecraft.server.WorldServer; // Paper
+ import net.minecraft.server.EntityExperienceOrb;
+ import net.minecraft.server.EntityGhast;
++import net.minecraft.server.EntityGiantZombie;
+ import net.minecraft.server.EntityItem;
+ import net.minecraft.server.EntityItemFrame;
+ import net.minecraft.server.EntityPainting;
+@@ -24,6 +25,7 @@ public class TrackingRange
+     public static int getEntityTrackingRange(Entity entity, int defaultRange)
+     {
+         if (entity instanceof EntityEnderDragon) return defaultRange; // Paper - enderdragon is exempt
++        if (entity instanceof EntityGiantZombie) return 96; // Monumenta - Giants are visible from further away
+         SpigotWorldConfig config = entity.world.spigotConfig;
+         if ( entity instanceof EntityPlayer )
+         {
