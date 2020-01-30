@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Hazerd <dransom96@gmail.com>
+Date: Mon, 31 Aug 2020 13:29:42 -0400
+Subject: [PATCH] Monumenta - Disable boss evokers summoning vexes
+
+
+diff --git a/src/main/java/net/minecraft/server/EntityEvoker.java b/src/main/java/net/minecraft/server/EntityEvoker.java
+index 9c738fff3dbdb4a830bfd7495b7a51ed998ac0b3..ff53aa0efc82e84398fd0ecee9cd15253f35c34a 100644
+--- a/src/main/java/net/minecraft/server/EntityEvoker.java
++++ b/src/main/java/net/minecraft/server/EntityEvoker.java
+@@ -185,7 +185,7 @@ public class EntityEvoker extends EntityIllagerWizard {
+ 
+         @Override
+         public boolean a() {
+-            if (!super.a()) {
++            if (!super.a() || EntityEvoker.this.getScoreboardTags().contains("boss_evoker_no_vex")) { // Monumenta - Disable boss evokers summoning vexes
+                 return false;
+             } else {
+                 int i = EntityEvoker.this.world.a(EntityVex.class, this.e, EntityEvoker.this, EntityEvoker.this.getBoundingBox().g(16.0D)).size();
