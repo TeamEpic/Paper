@@ -1,0 +1,62 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Fri, 18 Sep 2020 15:35:04 -0400
+Subject: [PATCH] Monumenta - Giant AI
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityGiantZombie.java b/src/main/java/net/minecraft/server/EntityGiantZombie.java
+index 702242653a47051c9ed32304c427c27652af6157..8429ad370086ac3f9b5b89bd929b7a9b17034ce1 100644
+--- a/src/main/java/net/minecraft/server/EntityGiantZombie.java
++++ b/src/main/java/net/minecraft/server/EntityGiantZombie.java
+@@ -19,4 +19,50 @@ public class EntityGiantZombie extends EntityMonster {
+     public float a(BlockPosition blockposition, IWorldReader iworldreader) {
+         return iworldreader.y(blockposition) - 0.5F;
+     }
++
++    @Override
++    protected void initPathfinder() {
++        this.goalSelector.a(8, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
++        this.goalSelector.a(8, new PathfinderGoalRandomLookaround(this));
++        this.goalSelector.a(7, new PathfinderGoalRandomStrollLand(this, 1.0D));
++        this.goalSelector.a(2, new PathfinderGoalMeleeAttack(this, 1.0D, false));
++
++        this.targetSelector.a(2, new PathfinderGoalHurtByTarget(this, new Class[0]));
++        this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true));
++    }
++
++    @Override
++    protected SoundEffect getSoundAmbient() {
++        return SoundEffects.ENTITY_ZOMBIE_AMBIENT;
++    }
++
++    // Seems to cover ambient and hurt frequency
++    @Override
++    protected float dG() {
++        return 0.3f;
++    }
++
++    @Override
++    protected SoundEffect getSoundHurt(DamageSource damagesource) {
++        return SoundEffects.ENTITY_ZOMBIE_HURT;
++    }
++
++    @Override
++    protected SoundEffect getSoundDeath() {
++        return SoundEffects.ENTITY_ZOMBIE_DEATH;
++    }
++
++    protected SoundEffect getSoundStep() {
++        return SoundEffects.ENTITY_ZOMBIE_STEP;
++    }
++
++    @Override
++    protected void b(BlockPosition blockposition, IBlockData iblockdata) {
++        this.playSound(this.getSoundStep(), 0.15F, 0.3F);
++    }
++
++    @Override
++    public EnumMonsterType getMonsterType() {
++        return EnumMonsterType.UNDEAD;
++    }
+ }

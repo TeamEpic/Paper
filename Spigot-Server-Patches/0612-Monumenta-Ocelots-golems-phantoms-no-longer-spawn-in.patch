@@ -1,0 +1,65 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Wed, 20 Nov 2019 01:20:13 -0500
+Subject: [PATCH] Monumenta - Ocelots, golems, phantoms no longer spawn in
+ peaceful from spawners
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityGolem.java b/src/main/java/net/minecraft/server/EntityGolem.java
+index f1644d01fbfee312dfc70007abb46e457d0f427e..936e54f53609800b1ff54fb20cfbbdd8477422a8 100644
+--- a/src/main/java/net/minecraft/server/EntityGolem.java
++++ b/src/main/java/net/minecraft/server/EntityGolem.java
+@@ -8,6 +8,11 @@ public abstract class EntityGolem extends EntityCreature {
+         super(entitytypes, world);
+     }
+ 
++    @Override
++    public boolean a(GeneratorAccess generatoraccess, EnumMobSpawn enummobspawn) {
++        return super.a(generatoraccess, enummobspawn) && (generatoraccess.getDifficulty() != EnumDifficulty.PEACEFUL || enummobspawn != EnumMobSpawn.SPAWNER);
++    }
++
+     @Override
+     public boolean b(float f, float f1) {
+         return false;
+diff --git a/src/main/java/net/minecraft/server/EntityOcelot.java b/src/main/java/net/minecraft/server/EntityOcelot.java
+index 8853892723bdf0ab0a3c1c8dc4175e63a8e82f2e..c76b1fef99a8db311340e92f596b9cae4b8879f9 100644
+--- a/src/main/java/net/minecraft/server/EntityOcelot.java
++++ b/src/main/java/net/minecraft/server/EntityOcelot.java
+@@ -16,6 +16,11 @@ public class EntityOcelot extends EntityAnimal {
+         this.eL();
+     }
+ 
++    @Override
++    public boolean a(GeneratorAccess generatoraccess, EnumMobSpawn enummobspawn) {
++        return super.a(generatoraccess, enummobspawn) && (generatoraccess.getDifficulty() != EnumDifficulty.PEACEFUL || enummobspawn != EnumMobSpawn.SPAWNER);
++    }
++
+     private boolean isTrusting() {
+         return (Boolean) this.datawatcher.get(EntityOcelot.bp);
+     }
+@@ -192,7 +197,7 @@ public class EntityOcelot extends EntityAnimal {
+     }
+ 
+     public static boolean c(EntityTypes<EntityOcelot> entitytypes, GeneratorAccess generatoraccess, EnumMobSpawn enummobspawn, BlockPosition blockposition, Random random) {
+-        return random.nextInt(3) != 0;
++        return generatoraccess.getDifficulty() != net.minecraft.server.EnumDifficulty.PEACEFUL;
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/EntityPhantom.java b/src/main/java/net/minecraft/server/EntityPhantom.java
+index 3a70900c73e3a6c4f40cf74406534f4bfd3eb67b..16b3314efd40696bad142c6b9e1b22c840ae230a 100644
+--- a/src/main/java/net/minecraft/server/EntityPhantom.java
++++ b/src/main/java/net/minecraft/server/EntityPhantom.java
+@@ -23,6 +23,11 @@ public class EntityPhantom extends EntityFlying implements IMonster {
+         this.lookController = new EntityPhantom.f(this);
+     }
+ 
++    @Override
++    public boolean a(GeneratorAccess generatoraccess, EnumMobSpawn enummobspawn) {
++        return super.a(generatoraccess, enummobspawn) && (generatoraccess.getDifficulty() != EnumDifficulty.PEACEFUL || enummobspawn != EnumMobSpawn.SPAWNER);
++    }
++
+     @Override
+     protected EntityAIBodyControl r() {
+         return new EntityPhantom.d(this);
