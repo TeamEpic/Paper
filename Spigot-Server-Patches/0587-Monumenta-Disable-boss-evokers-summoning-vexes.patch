@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Hazerd <dransom96@gmail.com>
+Date: Mon, 31 Aug 2020 13:29:42 -0400
+Subject: [PATCH] Monumenta - Disable boss evokers summoning vexes
+
+
+diff --git a/src/main/java/net/minecraft/server/EntityEvoker.java b/src/main/java/net/minecraft/server/EntityEvoker.java
+index 886268b09ed9b9b1d899f3a603d52d95a5012789..be7ff70c5668eb396d167f7e8922962c63c3b480 100644
+--- a/src/main/java/net/minecraft/server/EntityEvoker.java
++++ b/src/main/java/net/minecraft/server/EntityEvoker.java
+@@ -24,7 +24,7 @@ public class EntityEvoker extends EntityIllagerWizard {
+         this.goalSelector.a(8, new PathfinderGoalRandomStroll(this, 0.6D));
+         this.goalSelector.a(9, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 3.0F, 1.0F));
+         this.goalSelector.a(10, new PathfinderGoalLookAtPlayer(this, EntityInsentient.class, 8.0F));
+-        this.targetSelector.a(1, (new PathfinderGoalHurtByTarget(this, new Class[]{EntityRaider.class})).a());
++        this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, new Class[]{EntityRaider.class})); // Monumenta - Paper bug causes file to not compile
+         this.targetSelector.a(2, (new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true)).a(300));
+         this.targetSelector.a(3, (new PathfinderGoalNearestAttackableTarget<>(this, EntityVillagerAbstract.class, false)).a(300));
+         this.targetSelector.a(3, new PathfinderGoalNearestAttackableTarget<>(this, EntityIronGolem.class, false));
+@@ -190,7 +190,7 @@ public class EntityEvoker extends EntityIllagerWizard {
+ 
+         @Override
+         public boolean a() {
+-            if (!super.a()) {
++            if (!super.a() || EntityEvoker.this.getScoreboardTags().contains("boss_evoker_no_vex")) { // Monumenta - Disable boss evokers summoning vexes
+                 return false;
+             } else {
+                 int i = EntityEvoker.this.world.a(EntityVex.class, this.e, EntityEvoker.this, EntityEvoker.this.getBoundingBox().g(16.0D)).size();
