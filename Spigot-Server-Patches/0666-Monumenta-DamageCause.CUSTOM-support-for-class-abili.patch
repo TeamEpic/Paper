@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Fri, 6 Sep 2019 20:36:55 -0400
+Subject: [PATCH] Monumenta - DamageCause.CUSTOM support for class abilities
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+index c762015e1402b59bf28dae7f947e7737fbac5c1d..079a3703d38033b056ab3187cd018b9b920a4e17 100644
+--- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
++++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+@@ -929,6 +929,8 @@ public class CraftEventFactory {
+                 } else if (damager.getBukkitEntity() instanceof Projectile) {
+                     cause = DamageCause.PROJECTILE;
+                 }
++            } else if ("custom".equals(source.translationIndex)) {
++                cause = DamageCause.CUSTOM;
+             } else if ("thorns".equals(source.translationIndex)) {
+                 cause = DamageCause.THORNS;
+             }
