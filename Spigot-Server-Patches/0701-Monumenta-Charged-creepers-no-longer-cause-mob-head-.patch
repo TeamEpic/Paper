@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Tue, 31 Oct 2017 17:44:53 -0700
+Subject: [PATCH] Monumenta - Charged creepers no longer cause mob head drops
+
+
+diff --git a/src/main/java/net/minecraft/server/EntityCreeper.java b/src/main/java/net/minecraft/server/EntityCreeper.java
+index b2f028422d9a7a84e49e383b78032feb887a85c0..5ae773ea510f9703e7b7031a540767589500b1f7 100644
+--- a/src/main/java/net/minecraft/server/EntityCreeper.java
++++ b/src/main/java/net/minecraft/server/EntityCreeper.java
+@@ -270,7 +270,7 @@ public class EntityCreeper extends EntityMonster {
+     }
+ 
+     public boolean canCauseHeadDrop() {
+-        return this.isPowered() && this.bs < 1;
++        return false;
+     }
+ 
+     public void setCausedHeadDrop() {

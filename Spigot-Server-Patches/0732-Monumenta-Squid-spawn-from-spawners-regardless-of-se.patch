@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Wed, 17 Feb 2021 19:39:03 -0500
+Subject: [PATCH] Monumenta - Squid spawn from spawners regardless of sea level
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntitySquid.java b/src/main/java/net/minecraft/server/EntitySquid.java
+index b21605a62365fe24f315f35bd840b4740fc80f0e..7c4d7378849f2d5aaeed96d2aedcb6e13363cf29 100644
+--- a/src/main/java/net/minecraft/server/EntitySquid.java
++++ b/src/main/java/net/minecraft/server/EntitySquid.java
+@@ -169,6 +169,11 @@ public class EntitySquid extends EntityWaterAnimal {
+     }
+ 
+     public static boolean b(EntityTypes<EntitySquid> entitytypes, GeneratorAccess generatoraccess, EnumMobSpawn enummobspawn, BlockPosition blockposition, Random random) {
++        // MONUMENTA START
++        if (enummobspawn == EnumMobSpawn.SPAWNER) {
++            return generatoraccess.getDifficulty() != EnumDifficulty.PEACEFUL && generatoraccess.getFluid(blockposition).a((Tag) TagsFluid.WATER);
++        }
++        // MONUMENTA END
+         final double maxHeight = generatoraccess.getMinecraftWorld().paperConfig.squidMaxSpawnHeight > 0 ? generatoraccess.getMinecraftWorld().paperConfig.squidMaxSpawnHeight : generatoraccess.getSeaLevel(); // Paper
+         return blockposition.getY() > generatoraccess.getMinecraftWorld().spigotConfig.squidSpawnRangeMin && blockposition.getY() < maxHeight; // Spigot // Paper
+     }

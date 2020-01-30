@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Tue, 26 Jan 2021 17:55:32 -0500
+Subject: [PATCH] Monumenta - Always allow slimes to spawn from spawners
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntitySlime.java b/src/main/java/net/minecraft/server/EntitySlime.java
+index 03f487369749bd7dac0ac00a3035817d29727775..4b3cb9dc18a36f0f1d870c816499d54b4cd51647 100644
+--- a/src/main/java/net/minecraft/server/EntitySlime.java
++++ b/src/main/java/net/minecraft/server/EntitySlime.java
+@@ -291,6 +291,10 @@ public class EntitySlime extends EntityInsentient implements IMonster {
+ 
+     public static boolean c(EntityTypes<EntitySlime> entitytypes, GeneratorAccess generatoraccess, EnumMobSpawn enummobspawn, BlockPosition blockposition, Random random) {
+         if (generatoraccess.getDifficulty() != EnumDifficulty.PEACEFUL) {
++            if (enummobspawn == EnumMobSpawn.SPAWNER) {
++                return true;
++            }
++
+             if (Objects.equals(generatoraccess.i(blockposition), Optional.of(Biomes.SWAMP)) && blockposition.getY() > 50 && blockposition.getY() < 70 && random.nextFloat() < 0.5F && random.nextFloat() < generatoraccess.af() && generatoraccess.getLightLevel(blockposition) <= random.nextInt(8)) {
+                 return a(entitytypes, generatoraccess, enummobspawn, blockposition, random);
+             }
