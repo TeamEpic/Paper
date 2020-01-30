@@ -1,0 +1,26 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Wed, 20 Nov 2019 01:20:13 -0500
+Subject: [PATCH] Monumenta - Ocelots spawn on any block
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityOcelot.java b/src/main/java/net/minecraft/server/EntityOcelot.java
+index 7bd3fea6e0e478337c7f6400a941675eebba517b..52a67cbd638c31e0fc59dacb1f183388869eb22f 100644
+--- a/src/main/java/net/minecraft/server/EntityOcelot.java
++++ b/src/main/java/net/minecraft/server/EntityOcelot.java
+@@ -200,13 +200,9 @@ public class EntityOcelot extends EntityAnimal {
+         if (iworldreader.j((Entity) this) && !iworldreader.containsLiquid(this.getBoundingBox())) {
+             BlockPosition blockposition = this.getChunkCoordinates();
+ 
+-            if (blockposition.getY() < iworldreader.getSeaLevel()) {
+-                return false;
+-            }
+-
+             IBlockData iblockdata = iworldreader.getType(blockposition.down());
+ 
+-            if (iblockdata.a(Blocks.GRASS_BLOCK) || iblockdata.a((Tag) TagsBlock.LEAVES)) {
++            if (!iblockdata.a(Blocks.AIR)) {
+                 return true;
+             }
+         }
