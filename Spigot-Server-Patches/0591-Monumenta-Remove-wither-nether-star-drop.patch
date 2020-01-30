@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Fri, 9 Oct 2020 18:19:13 -0400
+Subject: [PATCH] Monumenta - Remove wither nether star drop
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/EntityWither.java b/src/main/java/net/minecraft/server/EntityWither.java
+index 2f466af4d56d6f87c9d98226276b041ba2e89ac5..6592b967a7f37f6690630ecede5f638bcee50d55 100644
+--- a/src/main/java/net/minecraft/server/EntityWither.java
++++ b/src/main/java/net/minecraft/server/EntityWither.java
+@@ -475,16 +475,6 @@ public class EntityWither extends EntityMonster implements IRangedEntity {
+         }
+     }
+ 
+-    @Override
+-    protected void dropDeathLoot(DamageSource damagesource, int i, boolean flag) {
+-        super.dropDeathLoot(damagesource, i, flag);
+-        EntityItem entityitem = this.a((IMaterial) Items.NETHER_STAR);
+-
+-        if (entityitem != null) {
+-            entityitem.r();
+-        }
+-
+-    }
+ 
+     @Override
+     public void checkDespawn() {
