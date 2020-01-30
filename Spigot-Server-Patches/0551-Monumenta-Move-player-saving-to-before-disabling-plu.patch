@@ -6,12 +6,12 @@ Subject: [PATCH] Monumenta - Move player saving to before disabling plugins
 Signed-off-by: Byron Marohn <combustible@live.com>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 5c71efe494faaf7427f82036d60cc81447e4b12c..01d41662e8bfa3b7703230eb77391f3cc1235bd2 100644
+index 4ab6579032043f570c20befa7fef8931babd2355..5993f5c8e2f11c3be200c353cd33018be3404ddd 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -745,6 +745,14 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -744,6 +744,14 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
          // CraftBukkit end
-         MinecraftServer.LOGGER.info("Stopping server");
+         MinecraftServer.LOGGER.info("Stopping server (Ignore any thread death message you see! - DO NOT REPORT THREAD DEATH TO PAPER)"); // Paper
          MinecraftTimings.stopServer(); // Paper
 +
 +        if (this.playerList != null) {
@@ -24,7 +24,7 @@ index 5c71efe494faaf7427f82036d60cc81447e4b12c..01d41662e8bfa3b7703230eb77391f3c
          // CraftBukkit start
          if (this.server != null) {
              this.server.disablePlugins();
-@@ -755,13 +763,6 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+@@ -754,13 +762,6 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
              this.getServerConnection().b();
          }
  
