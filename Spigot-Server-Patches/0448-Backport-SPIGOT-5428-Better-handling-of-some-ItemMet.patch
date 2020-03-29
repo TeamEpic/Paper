@@ -1,11 +1,11 @@
-From af4651f62f0e4ebd4af0dac08b03c94550da301c Mon Sep 17 00:00:00 2001
+From 1f1815a3e44440535567bb3d8a6269a25dab44ea Mon Sep 17 00:00:00 2001
 From: Mathias <mail@mathias.is>
 Date: Mon, 16 Dec 2019 19:11:10 +0200
 Subject: [PATCH] Backport SPIGOT-5428: Better handling of some ItemMeta
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBanner.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBanner.java
-index 2f72f0ce..ffc24634 100644
+index 2f72f0ce5..ffc246340 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBanner.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBanner.java
 @@ -53,7 +53,14 @@ public class CraftMetaBanner extends CraftMetaItem implements BannerMeta {
@@ -25,7 +25,7 @@ index 2f72f0ce..ffc24634 100644
          }
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaCharge.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaCharge.java
-index 267581ec..7adbc4ea 100644
+index 267581ec2..7adbc4eae 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaCharge.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaCharge.java
 @@ -36,7 +36,13 @@ class CraftMetaCharge extends CraftMetaItem implements FireworkEffectMeta {
@@ -44,7 +44,7 @@ index 267581ec..7adbc4ea 100644
      }
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaFirework.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaFirework.java
-index b82e2fdf..957c144b 100644
+index b82e2fdf7..957c144bf 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaFirework.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaFirework.java
 @@ -93,7 +93,13 @@ class CraftMetaFirework extends CraftMetaItem implements FireworkMeta {
@@ -63,7 +63,7 @@ index b82e2fdf..957c144b 100644
      }
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaMap.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaMap.java
-index e5b1a730..8a706aba 100644
+index e5b1a7302..8a706abae 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaMap.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaMap.java
 @@ -66,7 +66,13 @@ class CraftMetaMap extends CraftMetaItem implements MapMeta {
@@ -82,7 +82,7 @@ index e5b1a730..8a706aba 100644
          }
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaPotion.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaPotion.java
-index 29fbdcc8..9a7dec54 100644
+index 29fbdcc83..9a7dec547 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaPotion.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaPotion.java
 @@ -62,7 +62,13 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
@@ -101,5 +101,5 @@ index 29fbdcc8..9a7dec54 100644
          if (tag.hasKey(POTION_EFFECTS.NBT)) {
              NBTTagList list = tag.getList(POTION_EFFECTS.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND);
 -- 
-2.24.1
+2.17.1
 
