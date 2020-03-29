@@ -1,0 +1,92 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Sat, 28 Mar 2020 03:35:42 -0400
+Subject: [PATCH] Monumenta - Add events for loading and saving advancement
+ data
+
+
+diff --git a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
+index 17789407b9e86896a963a305a13357286aa5f319..7096db4d2ed0c93c4a937b354e371aec2be11953 100644
+--- a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
++++ b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
+@@ -138,9 +138,19 @@ public class AdvancementDataPlayer {
+     }
+ 
+     private void d(AdvancementDataWorld advancementdataworld) {
+-        if (this.f.isFile()) {
++        // Paper Start
++        com.destroystokyo.paper.event.player.PlayerAdvancementDataLoadEvent event = new com.destroystokyo.paper.event.player.PlayerAdvancementDataLoadEvent(this.player.getBukkitEntity(), this.f);
++        event.callEvent();
++        if (event.getPath().isFile() || event.getJsonData() != null) {
+             try {
+-                JsonReader jsonreader = new JsonReader(new StringReader(Files.toString(this.f, StandardCharsets.UTF_8)));
++                final JsonReader jsonreader;
++                if (event.getJsonData() != null) {
++                    jsonreader = new JsonReader(new StringReader(event.getJsonData()));
++                } else {
++                    jsonreader = new JsonReader(new StringReader(Files.toString(event.getPath(), StandardCharsets.UTF_8)));
++                }
++                // Paper End
++
+                 Throwable throwable = null;
+ 
+                 try {
+@@ -169,7 +179,7 @@ public class AdvancementDataPlayer {
+                         if (advancement == null) {
+                             // CraftBukkit start
+                             if (entry.getKey().getNamespace().equals("minecraft")) {
+-                                AdvancementDataPlayer.LOGGER.warn("Ignored advancement '{}' in progress file {} - it doesn't exist anymore?", entry.getKey(), this.f);
++                                AdvancementDataPlayer.LOGGER.warn("Ignored advancement '{}' in progress file {} - it doesn't exist anymore?", entry.getKey(), event.getPath()); // Paper
+                             }
+                             // CraftBukkit end
+                         } else {
+@@ -194,9 +204,9 @@ public class AdvancementDataPlayer {
+ 
+                 }
+             } catch (JsonParseException jsonparseexception) {
+-                AdvancementDataPlayer.LOGGER.error("Couldn't parse player advancements in {}", this.f, jsonparseexception);
++                AdvancementDataPlayer.LOGGER.error("Couldn't parse player advancements in {}", event.getPath(), jsonparseexception); // Paper
+             } catch (IOException ioexception) {
+-                AdvancementDataPlayer.LOGGER.error("Couldn't access player advancements in {}", this.f, ioexception);
++                AdvancementDataPlayer.LOGGER.error("Couldn't access player advancements in {}", event.getPath(), ioexception); // Paper
+             }
+         }
+ 
+@@ -227,8 +237,18 @@ public class AdvancementDataPlayer {
+ 
+         jsonelement.getAsJsonObject().addProperty("DataVersion", SharedConstants.getGameVersion().getWorldVersion());
+ 
++        // Paper start
++        com.destroystokyo.paper.event.player.PlayerAdvancementDataSaveEvent event = new com.destroystokyo.paper.event.player.PlayerAdvancementDataSaveEvent(this.player.getBukkitEntity(), this.f, AdvancementDataPlayer.b.toJson(jsonelement));
++        if (!event.callEvent()) {
++            return;
++        }
++        if (event.getPath().getParentFile() != null) {
++            event.getPath().getParentFile().mkdirs();
++        }
++        // Paper end
++
+         try {
+-            FileOutputStream fileoutputstream = new FileOutputStream(this.f);
++            FileOutputStream fileoutputstream = new FileOutputStream(event.getPath()); // Paper
+             Throwable throwable = null;
+ 
+             try {
+@@ -236,7 +256,7 @@ public class AdvancementDataPlayer {
+                 Throwable throwable1 = null;
+ 
+                 try {
+-                    AdvancementDataPlayer.b.toJson(jsonelement, outputstreamwriter);
++                    outputstreamwriter.write(event.getJsonData()); // Paper
+                 } catch (Throwable throwable2) {
+                     throwable1 = throwable2;
+                     throw throwable2;
+@@ -272,7 +292,7 @@ public class AdvancementDataPlayer {
+ 
+             }
+         } catch (IOException ioexception) {
+-            AdvancementDataPlayer.LOGGER.error("Couldn't save player advancements to {}", this.f, ioexception);
++            AdvancementDataPlayer.LOGGER.error("Couldn't save player advancements to {}", event.getPath(), ioexception);
+         }
+ 
+     }
