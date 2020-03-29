@@ -1,4 +1,4 @@
-From a7588a51670b27b1098697260b0f20a4ad9f518e Mon Sep 17 00:00:00 2001
+From d51012c19ef3a87c519454b393ef195921a59286 Mon Sep 17 00:00:00 2001
 From: Byron Marohn <combustible@live.com>
 Date: Wed, 27 Sep 2017 18:46:14 -0700
 Subject: [PATCH] Monumenta - Disable potion has no item logspam
