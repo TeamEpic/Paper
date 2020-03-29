@@ -1,0 +1,57 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Fri, 3 Apr 2020 21:20:03 -0700
+Subject: [PATCH] Monumenta - Add events for loading and saving player data
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/WorldNBTStorage.java b/src/main/java/net/minecraft/server/WorldNBTStorage.java
+index b5cf60495b85c6ae6c32ee8a1c65d80e59fdce3d..03bf5004577d9840936e12ac020b9c3ed2be6653 100644
+--- a/src/main/java/net/minecraft/server/WorldNBTStorage.java
++++ b/src/main/java/net/minecraft/server/WorldNBTStorage.java
+@@ -28,13 +28,22 @@ public class WorldNBTStorage {
+         if (org.spigotmc.SpigotConfig.disablePlayerDataSaving) return; // Spigot
+         try {
+             NBTTagCompound nbttagcompound = entityhuman.save(new NBTTagCompound());
++            // Paper start
+             File file = File.createTempFile(entityhuman.getUniqueIDString() + "-", ".dat", this.playerDir);
+-
+-            NBTCompressedStreamTools.a(nbttagcompound, file);
+             File file1 = new File(this.playerDir, entityhuman.getUniqueIDString() + ".dat");
+             File file2 = new File(this.playerDir, entityhuman.getUniqueIDString() + ".dat_old");
+ 
+-            SystemUtils.a(file1, file, file2);
++            com.destroystokyo.paper.event.player.PlayerDataSaveEvent event = new com.destroystokyo.paper.event.player.PlayerDataSaveEvent(((EntityPlayer)entityhuman).getBukkitEntity(), file1, nbttagcompound);
++            if (!event.callEvent()) {
++                // Event cancelled player data saving
++                return;
++            }
++
++            // Event may have modified the tag compound - and potentially also the destination path.
++            // Follow vanilla process - write to temp file, then rename to target path creating a backup if it exists
++            NBTCompressedStreamTools.a((NBTTagCompound)event.getData(), file);
++            SystemUtils.a(event.getPath(), file, file2);
++            // Paper end
+         } catch (Exception exception) {
+             WorldNBTStorage.LOGGER.error("Failed to save player data for {}", entityhuman.getName(), exception); // Paper
+         }
+@@ -59,10 +68,16 @@ public class WorldNBTStorage {
+                 }
+             }
+             // Spigot End
+-
+-            if (file.exists() && file.isFile()) {
+-                nbttagcompound = NBTCompressedStreamTools.a(file);
++            // Paper Start
++            com.destroystokyo.paper.event.player.PlayerDataLoadEvent event = new com.destroystokyo.paper.event.player.PlayerDataLoadEvent(((EntityPlayer)entityhuman).getBukkitEntity(), file);
++            event.callEvent();
++
++            if (event.getData() != null) {
++                nbttagcompound = (NBTTagCompound) event.getData();
++            } else if (event.getPath().exists() && event.getPath().isFile()) {
++                nbttagcompound = NBTCompressedStreamTools.a(event.getPath());
+             }
++            // Paper End
+             // Spigot Start
+             if ( usingWrongFile )
+             {

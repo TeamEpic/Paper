@@ -1,0 +1,40 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Sat, 9 May 2020 01:54:16 +0000
+Subject: [PATCH] Monumenta - Move player saving to before disabling plugins
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 172fc9ef9c0d3444eb99f750a17d42f130d94f73..f31e51e0052ec3418c4b941a4164bf07e8cbc119 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -765,6 +765,14 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+         // CraftBukkit end
+         MinecraftServer.LOGGER.info("Stopping server");
+         MinecraftTimings.stopServer(); // Paper
++
++        if (this.playerList != null) {
++            MinecraftServer.LOGGER.info("Saving players");
++            this.playerList.savePlayers();
++            this.playerList.shutdown(this.isRestarting); // Paper
++            try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets
++        }
++
+         // CraftBukkit start
+         if (this.server != null) {
+             this.server.disablePlugins();
+@@ -775,13 +783,6 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             this.getServerConnection().b();
+         }
+ 
+-        if (this.playerList != null) {
+-            MinecraftServer.LOGGER.info("Saving players");
+-            this.playerList.savePlayers();
+-            this.playerList.shutdown(this.isRestarting); // Paper
+-            try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets
+-        }
+-
+         MinecraftServer.LOGGER.info("Saving worlds");
+         Iterator iterator = this.getWorlds().iterator();
+ 
