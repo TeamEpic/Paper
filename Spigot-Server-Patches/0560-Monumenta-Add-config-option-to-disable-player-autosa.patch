@@ -1,0 +1,36 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Sun, 4 Oct 2020 19:54:42 +0000
+Subject: [PATCH] Monumenta - Add config option to disable player autosave
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+index 1c4bb5326b37072b93d35fbb306121d613de75e5..d24f9adeba7f436085321f41443119b18499392c 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+@@ -243,6 +243,11 @@ public class PaperConfig {
+         saveEmptyScoreboardTeams = getBoolean("settings.save-empty-scoreboard-teams", false);
+     }
+ 
++    public static boolean disablePlayerAutosave = false;
++    private static void disablePlayerAutosave() {
++        disablePlayerAutosave = getBoolean("settings.disable-player-autosave", false);
++    }
++
+     public static boolean bungeeOnlineMode = true;
+     private static void bungeeOnlineMode() {
+         bungeeOnlineMode = getBoolean("settings.bungee-online-mode", true);
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 01d41662e8bfa3b7703230eb77391f3cc1235bd2..7d1256c3810d7ae359d87133755efa2896701f84 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1199,7 +1199,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
+             //MinecraftServer.LOGGER.debug("Autosave started"); // Paper
+             serverAutoSave = (autosavePeriod > 0 && this.ticks % autosavePeriod == 0); // Paper
+             this.methodProfiler.enter("save");
+-            if (autosavePeriod > 0 && this.ticks % autosavePeriod == 0) { // Paper
++            if (!com.destroystokyo.paper.PaperConfig.disablePlayerAutosave && autosavePeriod > 0 && this.ticks % autosavePeriod == 0) { // Paper
+             this.playerList.savePlayers();
+             }// Paper
+             // Paper start
