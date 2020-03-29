@@ -1,0 +1,82 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Sat, 28 Mar 2020 03:35:42 -0400
+Subject: [PATCH] Monumenta - Add events for loading and saving advancement
+ data
+
+
+diff --git a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
+index 4d12edf4f3eca1e7d7ba22760baea6f7458c8e98..dbdcf04c47a4e5afa6bfb47d9eee7d2650f3cc78 100644
+--- a/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
++++ b/src/main/java/net/minecraft/server/AdvancementDataPlayer.java
+@@ -135,9 +135,18 @@ public class AdvancementDataPlayer {
+     }
+ 
+     private void g() {
+-        if (this.e.isFile()) {
++        // Paper Start
++        com.destroystokyo.paper.event.player.PlayerAdvancementDataLoadEvent event = new com.destroystokyo.paper.event.player.PlayerAdvancementDataLoadEvent(this.player.getBukkitEntity(), this.e);
++        event.callEvent();
++        if (event.getPath().isFile() || event.getJsonData() != null) {
+             try {
+-                JsonReader jsonreader = new JsonReader(new StringReader(Files.toString(this.e, StandardCharsets.UTF_8)));
++                final JsonReader jsonreader;
++                if (event.getJsonData() != null) {
++                    jsonreader = new JsonReader(new StringReader(event.getJsonData()));
++                } else {
++                    jsonreader = new JsonReader(new StringReader(Files.toString(event.getPath(), StandardCharsets.UTF_8)));
++                }
++                // Paper End
+                 Throwable throwable = null;
+ 
+                 try {
+@@ -166,7 +175,7 @@ public class AdvancementDataPlayer {
+                         if (advancement == null) {
+                             // CraftBukkit start
+                             if (entry.getKey().getNamespace().equals("minecraft")) {
+-                                AdvancementDataPlayer.LOGGER.warn("Ignored advancement '{}' in progress file {} - it doesn't exist anymore?", entry.getKey(), this.e);
++                                AdvancementDataPlayer.LOGGER.warn("Ignored advancement '{}' in progress file {} - it doesn't exist anymore?", entry.getKey(), event.getPath()); // Paper
+                             }
+                             // CraftBukkit end
+                         } else {
+@@ -191,9 +200,9 @@ public class AdvancementDataPlayer {
+ 
+                 }
+             } catch (JsonParseException jsonparseexception) {
+-                AdvancementDataPlayer.LOGGER.error("Couldn't parse player advancements in {}", this.e, jsonparseexception);
++                AdvancementDataPlayer.LOGGER.error("Couldn't parse player advancements in {}", event.getPath(), jsonparseexception); // Paper
+             } catch (IOException ioexception) {
+-                AdvancementDataPlayer.LOGGER.error("Couldn't access player advancements in {}", this.e, ioexception);
++                AdvancementDataPlayer.LOGGER.error("Couldn't access player advancements in {}", event.getPath(), ioexception); // Paper
+             }
+         }
+ 
+@@ -224,8 +233,18 @@ public class AdvancementDataPlayer {
+ 
+         jsonelement.getAsJsonObject().addProperty("DataVersion", SharedConstants.getGameVersion().getWorldVersion());
+ 
++        // Paper start
++        com.destroystokyo.paper.event.player.PlayerAdvancementDataSaveEvent event = new com.destroystokyo.paper.event.player.PlayerAdvancementDataSaveEvent(this.player.getBukkitEntity(), this.e, AdvancementDataPlayer.b.toJson(jsonelement));
++        if (!event.callEvent()) {
++            return;
++        }
++        if (event.getPath().getParentFile() != null) {
++            event.getPath().getParentFile().mkdirs();
++        }
++        // Paper end
++
+         try {
+-            FileOutputStream fileoutputstream = new FileOutputStream(this.e);
++            FileOutputStream fileoutputstream = new FileOutputStream(event.getPath()); // Paper
+             Throwable throwable = null;
+ 
+             try {
+@@ -233,7 +252,7 @@ public class AdvancementDataPlayer {
+                 Throwable throwable1 = null;
+ 
+                 try {
+-                    AdvancementDataPlayer.b.toJson(jsonelement, outputstreamwriter);
++                    outputstreamwriter.write(event.getJsonData()); // Paper
+                 } catch (Throwable throwable2) {
+                     throwable1 = throwable2;
+                     throw throwable2;
