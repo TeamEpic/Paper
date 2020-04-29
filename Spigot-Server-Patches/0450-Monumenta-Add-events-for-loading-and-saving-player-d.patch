@@ -1,0 +1,76 @@
+From 26209842d6fc6473062458777cd0e49736464850 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Fri, 3 Apr 2020 21:20:03 -0700
+Subject: [PATCH] Monumenta - Add events for loading and saving player data
+
+Signed-off-by: Byron Marohn <combustible@live.com>
+
+diff --git a/src/main/java/net/minecraft/server/WorldNBTStorage.java b/src/main/java/net/minecraft/server/WorldNBTStorage.java
+index 9be0e994e..a89e33f69 100644
+--- a/src/main/java/net/minecraft/server/WorldNBTStorage.java
++++ b/src/main/java/net/minecraft/server/WorldNBTStorage.java
+@@ -199,12 +199,19 @@ public class WorldNBTStorage implements IDataManager, IPlayerFileData {
+             File file = new File(this.playerDir, entityhuman.bu() + ".dat.tmp");
+             File file1 = new File(this.playerDir, entityhuman.bu() + ".dat");
+ 
+-            NBTCompressedStreamTools.a(nbttagcompound, (OutputStream) (new FileOutputStream(file)));
+-            if (file1.exists()) {
+-                file1.delete();
++            // Paper start
++            com.destroystokyo.paper.event.player.PlayerDataSaveEvent event = new com.destroystokyo.paper.event.player.PlayerDataSaveEvent(((EntityPlayer)entityhuman).getBukkitEntity(), file1, nbttagcompound);
++            if (!event.callEvent()) {
++                return;
++            }
++
++            NBTCompressedStreamTools.a((NBTTagCompound)event.getData(), (OutputStream) (new FileOutputStream(file)));
++            if (event.getPath().exists()) {
++                event.getPath().delete();
+             }
+ 
+-            file.renameTo(file1);
++            file.renameTo(event.getPath());
++            // Paper end
+         } catch (Exception exception) {
+             WorldNBTStorage.b.error("Failed to save player data for {}", entityhuman.getName(), exception); // Paper
+         }
+@@ -217,28 +224,16 @@ public class WorldNBTStorage implements IDataManager, IPlayerFileData {
+ 
+         try {
+             File file = new File(this.playerDir, entityhuman.bu() + ".dat");
+-            // Spigot Start
+-            boolean usingWrongFile = false;
+-            if ( org.bukkit.Bukkit.getOnlineMode() && !file.exists() ) // Paper - Check online mode first
+-            {
+-                file = new File( this.playerDir, UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + entityhuman.getName() ).getBytes( "UTF-8" ) ).toString() + ".dat");
+-                if ( file.exists() )
+-                {
+-                    usingWrongFile = true;
+-                    org.bukkit.Bukkit.getServer().getLogger().warning( "Using offline mode UUID file for player " + entityhuman.getName() + " as it is the only copy we can find." );
+-                }
+-            }
+-            // Spigot End
+-
+-            if (file.exists() && file.isFile()) {
+-                nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(file)));
+-            }
+-            // Spigot Start
+-            if ( usingWrongFile )
+-            {
+-                file.renameTo( new File( file.getPath() + ".offline-read" ) );
++            // Paper Start
++            com.destroystokyo.paper.event.player.PlayerDataLoadEvent event = new com.destroystokyo.paper.event.player.PlayerDataLoadEvent(((EntityPlayer)entityhuman).getBukkitEntity(), file);
++            event.callEvent();
++
++            if (event.getData() != null) {
++                nbttagcompound = (NBTTagCompound) event.getData();
++            } else if (event.getPath().exists() && event.getPath().isFile()) {
++                nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(event.getPath())));
+             }
+-            // Spigot End
++            // Paper End
+         } catch (Exception exception) {
+             WorldNBTStorage.b.warn("Failed to load player data for {}", entityhuman.getDisplayName().getString());
+         }
+-- 
+2.20.1
+
