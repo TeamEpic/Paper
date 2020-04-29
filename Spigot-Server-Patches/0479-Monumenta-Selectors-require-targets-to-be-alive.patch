@@ -1,0 +1,24 @@
+From 2c158258d5027328f49f21def65c9d03f7478357 Mon Sep 17 00:00:00 2001
+From: Tim Southwick <NickNackGus@gmail.com>
+Date: Sun, 19 Apr 2020 19:34:47 -0400
+Subject: [PATCH] Monumenta - Selectors require targets to be alive
+
+
+diff --git a/src/main/java/net/minecraft/server/ArgumentParserSelector.java b/src/main/java/net/minecraft/server/ArgumentParserSelector.java
+index 988f77f1e..7e5f80c62 100644
+--- a/src/main/java/net/minecraft/server/ArgumentParserSelector.java
++++ b/src/main/java/net/minecraft/server/ArgumentParserSelector.java
+@@ -102,9 +102,7 @@ public class ArgumentParserSelector {
+         this.r = CriterionConditionValue.IntegerRange.e;
+         this.y = CriterionConditionRange.a;
+         this.z = CriterionConditionRange.a;
+-        this.A = (entity) -> {
+-            return true;
+-        };
++        this.A = Entity::isAlive;
+         this.B = ArgumentParserSelector.g;
+         this.G = ArgumentParserSelector.k;
+         this.l = stringreader;
+-- 
+2.17.1
+

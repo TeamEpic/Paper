@@ -1,0 +1,91 @@
+From cea0782e989c89643a17b3482435f1953472a626 Mon Sep 17 00:00:00 2001
+From: Monumenta <monumenta.mgmt@gmail.com>
+Date: Sun, 14 Jan 2018 20:41:40 -0500
+Subject: [PATCH] Monumenta - Invulnerable entities still call
+ EntityDamageByEntityEvent
+
+
+diff --git a/src/main/java/net/minecraft/server/EntityLiving.java b/src/main/java/net/minecraft/server/EntityLiving.java
+index 4d5459d24..05dc92ca3 100644
+--- a/src/main/java/net/minecraft/server/EntityLiving.java
++++ b/src/main/java/net/minecraft/server/EntityLiving.java
+@@ -37,6 +37,10 @@ import org.bukkit.event.entity.EntityTeleportEvent;
+ import org.bukkit.event.player.PlayerItemConsumeEvent;
+ // CraftBukkit end
+ 
++import java.util.EnumMap;
++import com.google.common.base.Functions;
++import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
++
+ import co.aikar.timings.MinecraftTimings; // Paper
+ 
+ public abstract class EntityLiving extends Entity {
+@@ -936,6 +940,7 @@ public abstract class EntityLiving extends Entity {
+ 
+     public boolean damageEntity(DamageSource damagesource, float f) {
+         if (this.isInvulnerable(damagesource)) {
++            damageEntity0(damagesource, f);
+             return false;
+         } else if (this.world.isClientSide) {
+             return false;
+@@ -1449,9 +1454,21 @@ public abstract class EntityLiving extends Entity {
+         }
+     }
+ 
++    private static final Function<? super Double, Double> ZERO = Functions.constant(-0.0);
++
++
+     // CraftBukkit start
+     protected boolean damageEntity0(final DamageSource damagesource, float f) { // void -> boolean, add final
+-       if (!this.isInvulnerable(damagesource)) {
++       if (this.isInvulnerable(damagesource)) {
++            if (damagesource != null) {
++                Map<DamageModifier, Double> modifiers = new EnumMap<DamageModifier, Double>(DamageModifier.class);
++                Map<DamageModifier, Function<? super Double, Double>> modifierFunctions = new EnumMap<DamageModifier, Function<? super Double, Double>>(DamageModifier.class);
++                modifiers.put(DamageModifier.BASE, (double)f);
++                modifierFunctions.put(DamageModifier.BASE, ZERO);
++
++                CraftEventFactory.callEntityDamageEvent(damagesource.getEntity(), this, DamageCause.ENTITY_ATTACK, modifiers, modifierFunctions);
++            }
++       } else {
+             final boolean human = this instanceof EntityHuman;
+             float originalDamage = f;
+             Function<Double, Double> hardHat = new Function<Double, Double>() {
+diff --git a/src/main/java/net/minecraft/server/EntityParrot.java b/src/main/java/net/minecraft/server/EntityParrot.java
+index 6acad3520..6618bf944 100644
+--- a/src/main/java/net/minecraft/server/EntityParrot.java
++++ b/src/main/java/net/minecraft/server/EntityParrot.java
+@@ -300,16 +300,7 @@ public class EntityParrot extends EntityPerchable implements EntityBird {
+     }
+ 
+     public boolean damageEntity(DamageSource damagesource, float f) {
+-        if (this.isInvulnerable(damagesource)) {
+-            return false;
+-        } else {
+-            if (this.goalSit != null) {
+-                // CraftBukkit - moved into EntityLiving.d(DamageSource, float)
+-                // this.goalSit.setSitting(false);
+-            }
+-
+-            return super.damageEntity(damagesource, f);
+-        }
++        return super.damageEntity(damagesource, f);
+     }
+ 
+     public int getVariant() {
+diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+index 7905420ca..1f6cbd1d6 100644
+--- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
++++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+@@ -823,7 +823,7 @@ public class CraftEventFactory {
+         throw new IllegalStateException(String.format("Unhandled damage of %s from %s", entity, source.translationIndex));
+     }
+ 
+-    private static EntityDamageEvent callEntityDamageEvent(Entity damager, Entity damagee, DamageCause cause, Map<DamageModifier, Double> modifiers, Map<DamageModifier, Function<? super Double, Double>> modifierFunctions) {
++    public static EntityDamageEvent callEntityDamageEvent(Entity damager, Entity damagee, DamageCause cause, Map<DamageModifier, Double> modifiers, Map<DamageModifier, Function<? super Double, Double>> modifierFunctions) {
+         EntityDamageEvent event;
+         if (damager != null) {
+             event = new EntityDamageByEntityEvent(damager.getBukkitEntity(), damagee.getBukkitEntity(), cause, modifiers, modifierFunctions);
+-- 
+2.17.1
+
