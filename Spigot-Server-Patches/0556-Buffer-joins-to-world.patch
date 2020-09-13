@@ -8,10 +8,10 @@ the world per tick, this attempts to reduce the impact that join floods
 has on the server
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index 5d4783e357218694ac52ec0ab5c030470cc6595f..431aecdbc93d93b38813536ca5297acfc6c2a3b1 100644
+index 8444819f071b13e98ba07032520016a664b7b9bc..1c4bb5326b37072b93d35fbb306121d613de75e5 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-@@ -446,4 +446,9 @@ public class PaperConfig {
+@@ -447,4 +447,9 @@ public class PaperConfig {
          allowPistonDuplication = getBoolean("settings.unsupported-settings.allow-piston-duplication", config.getBoolean("settings.unsupported-settings.allow-tnt-duplication", false));
          set("settings.unsupported-settings.allow-tnt-duplication", null);
      }
