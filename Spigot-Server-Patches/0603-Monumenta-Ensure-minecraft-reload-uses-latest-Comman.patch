@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Byron Marohn <combustible@live.com>
+Date: Sat, 24 Oct 2020 14:57:50 -0400
+Subject: [PATCH] Monumenta - Ensure minecraft:reload uses latest
+ CommandDispatcher
+
+
+diff --git a/src/main/java/net/minecraft/server/DataPackResources.java b/src/main/java/net/minecraft/server/DataPackResources.java
+index f6714515cc6b0265b772e5850301f6165c8f3d54..04d2916021e5d3690e60d858d481041920744f85 100644
+--- a/src/main/java/net/minecraft/server/DataPackResources.java
++++ b/src/main/java/net/minecraft/server/DataPackResources.java
+@@ -7,6 +7,7 @@ import java.util.concurrent.Executor;
+ public class DataPackResources implements AutoCloseable {
+ 
+     private static final CompletableFuture<Unit> a = CompletableFuture.completedFuture(Unit.INSTANCE);
++    public static CommandDispatcher staticDispatcher = null;
+     private final IReloadableResourceManager b;
+     public CommandDispatcher commandDispatcher;
+     private final CraftingManager d;
+@@ -23,7 +24,11 @@ public class DataPackResources implements AutoCloseable {
+         this.f = new LootPredicateManager();
+         this.g = new LootTableRegistry(this.f);
+         this.h = new AdvancementDataWorld(this.f);
+-        this.commandDispatcher = new CommandDispatcher(commanddispatcher_servertype);
++        if (staticDispatcher == null) {
++            this.commandDispatcher = new CommandDispatcher(commanddispatcher_servertype);
++        } else {
++            this.commandDispatcher = staticDispatcher;
++        }
+         this.i = new CustomFunctionManager(i, this.commandDispatcher.a());
+         this.b.a((IReloadListener) this.e);
+         this.b.a((IReloadListener) this.f);
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 4e1b4d7cde8e0ea2d5e765dfc879db55e7bd669d..b938ea9a86a49f8d4d2ce6c7cf3269d86b4ff23f 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -456,6 +456,7 @@ public final class CraftServer implements Server {
+     public void syncCommands() {
+         // Clear existing commands
+         CommandDispatcher dispatcher = console.dataPackResources.commandDispatcher = new CommandDispatcher();
++        console.dataPackResources.staticDispatcher = dispatcher;
+ 
+         // Register all commands, vanilla ones will be using the old dispatcher references
+         for (Map.Entry<String, Command> entry : commandMap.getKnownCommands().entrySet()) {
